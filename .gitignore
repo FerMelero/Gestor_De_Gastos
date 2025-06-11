@@ -1,2 +1,3 @@
 apkey.txt
 .env
+database/dev.sqlite
