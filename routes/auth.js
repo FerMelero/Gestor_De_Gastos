@@ -1,9 +1,14 @@
 const express = require('express');
+const { Resend } = require('resend')
 const router = express.Router()
 const user = require('../models/user')
+const transaccion = require('../models/transaccion')
 const bcrypt = require('bcrypt')
 const saltRounds = 12
+require('dotenv').config();
 
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 function autenticado(req, res, next) {
     if(req.session.usuario) {
         next()
@@ -51,6 +56,23 @@ router.post('/register', async(req, res) => {
             email,
             password: hashedPassword
         })
+        try {
+            const { data, error } = await resend.emails.send({
+                from: 'Gestor de Gastos <onboarding@resend.dev>',
+                to: ['serviciogestiongastos@gmail.com'],
+                subject: '¡Bienvenido a Gestor de Gastos!',
+                html: `<strong>Hola ${usuario}, tu cuenta ha sido creada correctamente.</strong>`
+            });
+
+            if (error) {
+                console.error('Error al enviar email:', error);
+            } else {
+                console.log('Email enviado:', data);
+            }
+        } catch (err) {
+            console.error('Error general al enviar email:', err);
+            }
+        
         res.redirect('/login')
 
     }
