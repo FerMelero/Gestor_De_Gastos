@@ -7,6 +7,7 @@ const path = require('path')
 const sequelize = require('./database/database')
 const session = require('express-session')
 const { router } = require('./routes/auth')
+const { User, Transaccion } = require('./models');
 
 app.use(express.static('public'))
 app.use(session({
@@ -23,23 +24,17 @@ app.set('views', path.join(__dirname, 'vistas'))
 
 
 
-// Conexión a la base de datos
-async function connectionDB() {
+app.listen(port, async () => {
     try {
-        await sequelize.authenticate()
-        console.log('Conexión establecida correctamente.')
-    } catch (error) {
-        console.error('No se pudo conectar a la base de datos:', error)
+        await sequelize.authenticate();
+        console.log('Conexión establecida correctamente.');
+        await sequelize.sync({ force: false });
+        console.log('Modelos sincronizados.');
+        console.log(`Servidor escuchando en http://localhost:${port}`);
+    } catch (err) {
+        console.error('Error al iniciar:', err);
     }
-}
-
-// Sincronizar modelos
-async function syncDB() {
-    console.log('Sincronizando DB...')
-    await sequelize.sync({ force: false })
-    console.log("Todos los modelos se han sincronizado.")
-}
-
+});
 
 
 app.use('/', router)
@@ -47,14 +42,3 @@ app.use('/', router)
 app.use((req, res) => {
     res.status(404).render('error', { message: 'Página no encontrada' })
 })
-
-
-
-
-// verificar la conexión y sincronización con la BD
-app.listen(port, () => {
-    connectionDB()
-    syncDB()
-    console.log(`Servidor escuchando en http://localhost:${port}`)
-})
-

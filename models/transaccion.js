@@ -1,9 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/database');
 
-const transaccion = sequelize.define('transaccion', {
-  tipo: {          
-    type: DataTypes.STRING,
+const Transaccion = sequelize.define('Transaccion', {
+  tipo: {
+    type: DataTypes.STRING, // 'ingreso' o 'gasto'
     allowNull: false,
   },
   descripcion: {
@@ -16,13 +16,8 @@ const transaccion = sequelize.define('transaccion', {
   },
   fecha: {
     type: DataTypes.DATEONLY,
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
-  usuarioId: {      
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    defaultValue: DataTypes.NOW
   }
 });
 
-module.exports = transaccion;
+module.exports = Transaccion;

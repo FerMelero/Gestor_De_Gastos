@@ -1,11 +1,11 @@
 const express = require('express');
 const { Resend } = require('resend')
 const router = express.Router()
-const user = require('../models/user')
-const transaccion = require('../models/transaccion')
 const bcrypt = require('bcrypt')
 const saltRounds = 12
+const { User, Transaccion } = require('../models');
 require('dotenv').config();
+
 
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -45,13 +45,13 @@ router.get('/inicio',autenticado, (req, res) => {
 // crear un usuario si no existe ya ese usuario
 router.post('/register', async(req, res) => {
     const { usuario, email, contraseña } = req.body
-    const existeUser = await user.findOne({where : {username : usuario}})
+    const existeUser = await User.findOne({where : {username : usuario}})
 
     if(existeUser) {
         res.render('error', { message: 'Ya existe este usuario' })
     } else {
         const hashedPassword = await bcrypt.hash(contraseña, saltRounds);
-        await user.create({
+        await User.create({
             username: usuario,
             email,
             password: hashedPassword
@@ -81,7 +81,7 @@ router.post('/register', async(req, res) => {
 // logearse y asegurarse de que existe el user y la contraseña coincide
 router.post('/login', async(req, res) => {
     const { usuario, contraseña } = req.body
-    const existeUser = await user.findOne({where : {username:usuario}})
+    const existeUser = await User.findOne({where : {username:usuario}})
 
     if(!existeUser) {
         return res.render('error', { message: 'No se ha podido encontrar el usuario' }) // manejar errores
@@ -97,6 +97,30 @@ router.post('/login', async(req, res) => {
 
     
 })
+
+router.get('/ingresos/nuevo', async(req, res) => {
+    res.render('ingresoNuevo')
+})
+
+router.post('/nuevoIngreso', async(req, res) => {
+    const {descripcion, monto} = req.body
+
+    if(monto <= 0){
+        return res.render('error', { message: '¡El ingreso debe ser mayor a 0!' })
+    }
+    const fecha = new Date()
+    const fechaISO = fecha.toISOString().split('T')[0]
+
+    await Transaccion.create({
+        tipo:'I',
+        descripcion: descripcion,
+        importe: monto,
+        fecha: fechaISO
+    })
+
+    res.render('inicio')
+})
+
 
 
 
