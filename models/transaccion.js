@@ -3,7 +3,7 @@ const sequelize = require('../database/database');
 
 const Transaccion = sequelize.define('Transaccion', {
   tipo: {
-    type: DataTypes.STRING, // 'ingreso' o 'gasto'
+    type: DataTypes.STRING, // 'I' para ingreso o 'G' para gasto
     allowNull: false,
   },
   descripcion: {
@@ -17,6 +17,10 @@ const Transaccion = sequelize.define('Transaccion', {
   fecha: {
     type: DataTypes.DATEONLY,
     defaultValue: DataTypes.NOW
+  },
+  usuarioId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   }
 });
 

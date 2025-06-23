@@ -38,8 +38,14 @@ router.get('/register',noAutenticado, (req, res) => {
     res.render('register')
 })
 
-router.get('/inicio',autenticado, (req, res) => {
-    res.render('inicio')
+router.get('/inicio',autenticado, async(req, res) => {
+    const transaccionesUser = await Transaccion.findAll( {where: { usuarioID: req.session.usuario.id, tipo: 'I' }})
+    let sumaIngresos = 0
+
+    for(let i = 0; i < transaccionesUser.length; i++){
+        sumaIngresos += transaccionesUser[i].importe
+    }
+    res.render('inicio', {sumaIngresos})
 })
 
 // crear un usuario si no existe ya ese usuario
@@ -79,26 +85,32 @@ router.post('/register', async(req, res) => {
 })
 
 // logearse y asegurarse de que existe el user y la contraseña coincide
-router.post('/login', async(req, res) => {
+router.post('/login', async (req, res) => {
     const { usuario, contraseña } = req.body
-    const existeUser = await User.findOne({where : {username:usuario}})
+    const existeUser = await User.findOne({ where: { username: usuario } })
 
-    if(!existeUser) {
-        return res.render('error', { message: 'No se ha podido encontrar el usuario' }) // manejar errores
-    } 
+    if (!existeUser) {
+        return res.render('error', { message: 'No se ha podido encontrar el usuario' });
+    }
 
     const coincide = await bcrypt.compare(contraseña, existeUser.password);
-        if (coincide) {
-            req.session.usuario = existeUser;
-            res.redirect('/inicio');
-        } else {
-            res.render('error', { message: 'Nombre de usuario o contraseña incorrecta' });
-        }
+    if (coincide) {
+        // Guardar solo los datos necesarios en sesión:
+        req.session.usuario = {
+            id: existeUser.id,
+            username: existeUser.username,
+            email: existeUser.email
+        };
 
-    
-})
+        res.redirect('/inicio');
+    } else {
+        res.render('error', { message: 'Nombre de usuario o contraseña incorrecta' });
+    }
+});
+
 
 router.get('/ingresos/nuevo', async(req, res) => {
+    console.log("Usuario en sesión:", req.session.usuario);
     res.render('ingresoNuevo')
 })
 
@@ -112,13 +124,15 @@ router.post('/nuevoIngreso', async(req, res) => {
     const fechaISO = fecha.toISOString().split('T')[0]
 
     await Transaccion.create({
-        tipo:'I',
-        descripcion: descripcion,
+        tipo: 'I',
+        descripcion,
         importe: monto,
-        fecha: fechaISO
-    })
+        fecha: fechaISO,
+        usuarioId: req.session.usuario.id  
+});
 
-    res.render('inicio')
+
+    res.redirect('/inicio');
 })
 
 

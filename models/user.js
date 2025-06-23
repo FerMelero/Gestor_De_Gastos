@@ -5,10 +5,15 @@ class User extends Model {}
 
 User.init(
   {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true
+      unique: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -24,7 +29,5 @@ User.init(
     modelName: 'User', 
   },
 );
-
-console.log(User === sequelize.models.User); 
 
 module.exports = User;
