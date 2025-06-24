@@ -39,13 +39,22 @@ router.get('/register',noAutenticado, (req, res) => {
 })
 
 router.get('/inicio',autenticado, async(req, res) => {
-    const transaccionesUser = await Transaccion.findAll( {where: { usuarioID: req.session.usuario.id, tipo: 'I' }})
-    let sumaIngresos = 0
+    const ingresos = await Transaccion.findAll( {where: { usuarioID: req.session.usuario.id, tipo: 'I' }})
+    const gastos = await Transaccion.findAll( {where: { usuarioID: req.session.usuario.id, tipo: 'G' }})
 
-    for(let i = 0; i < transaccionesUser.length; i++){
-        sumaIngresos += transaccionesUser[i].importe
+    let saldo = 0;
+
+    for (let i = 0; i < ingresos.length; i++) {
+        saldo += ingresos[i].importe;
     }
-    res.render('inicio', {sumaIngresos})
+
+    for (let i = 0; i < gastos.length; i++) {
+        saldo -= gastos[i].importe;
+    }
+
+
+
+    res.render('inicio', {saldo})
 })
 
 // crear un usuario si no existe ya ese usuario
@@ -134,6 +143,33 @@ router.post('/nuevoIngreso', async(req, res) => {
 
     res.redirect('/inicio');
 })
+
+router.get('/gastos/nuevo', async(req, res) => {
+    console.log("Usuario en sesión:", req.session.usuario);
+    res.render('gastoNuevo')
+})
+
+router.post('/nuevoGasto', async(req, res) => {
+    const {descripcion, monto} = req.body
+
+    if(monto <= 0){
+        return res.render('error', { message: '¡El gasto debe ser mayor a 0!' })
+    }
+    const fecha = new Date()
+    const fechaISO = fecha.toISOString().split('T')[0]
+
+    await Transaccion.create({
+        tipo: 'G',
+        descripcion,
+        importe: (monto),
+        fecha: fechaISO,
+        usuarioId: req.session.usuario.id  
+});
+
+
+    res.redirect('/inicio');
+})
+
 
 
 

@@ -12,21 +12,13 @@
     <h1>Bienvenido</h1>
 
     <section id="saldo-total">
-        <input type="number" name="saldo" id="num-saldo" value="<%= sumaIngresos %>" disabled>
-        <input type="number" name="gastos" id="num-gastos" disabled>
+        <input type="number" name="saldo" id="num-saldo" value="<%= saldo %>" disabled>
         <button onclick="location.href='/ingresos/nuevo'">Añadir ingreso</button>
-        <button>Añadir gasto</button>
+        <button onclick="location.href='/gastos/nuevo'">Añadir gasto</button>
     </section>
     <section>
-        <label for="">Ingresos mensuales: </label>
-        <input type="number" name="ingreso-mensual" id="ingreso-mensual" disabled>
-        <button>Ver detalles ingresos</button>
-    </section>
-    <section>
-        <label for="">Gastos mensuales: </label>
-        <input type="number" name="gasto-mensual" id="gasto-mensual" disabled>
-    </section>
-    <section></section>
+        <button>Ver mis últimos movimientos</button>
+</section>
     
 </body>
 </html>
