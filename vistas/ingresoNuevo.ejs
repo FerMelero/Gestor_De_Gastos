@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo ingreso</title>
+    <%- include('estilo') %>
 </head>
 <body>
+    <%- include('nav') %>
     <h2>A continuación se presenta un formulario</h2>
 
     <form action="/nuevoIngreso" method="post">
         <label for="">Introduzca el concepto del ingreso: </label>
         <input type="text" name="descripcion" id="descripcion-ingreso">
+        <br>
 
         <label for="">Introduzca el monto del ingreso: </label>
         <input type="number" name="monto" id="monto-ingreso">
+        <br>
         <button type="submit">Enviar</button>
     </form>
     

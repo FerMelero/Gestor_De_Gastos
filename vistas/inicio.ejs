@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
-
-    
+    <%- include('estilo') %>    
 </head>
 <body>
 
-    <h1>Bienvenido</h1>
+    <h1>¡Bienvenido a tu panel de control financiero!</h1>
+    <p>Aquí puedes consultar tu saldo actual, registrar nuevos ingresos o gastos, y revisar tus movimientos recientes.</p>
+
 
     <section id="saldo-total">
+        <label for="saldo">Saldo total: </label>
         <input type="number" name="saldo" id="num-saldo" value="<%= saldo %>" disabled>
         <button onclick="location.href='/ingresos/nuevo'">Añadir ingreso</button>
         <button onclick="location.href='/gastos/nuevo'">Añadir gasto</button>

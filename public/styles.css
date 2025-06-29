@@ -20,3 +20,37 @@ h2 {
 input, button {
   font-size: 1rem; /* 16px */
 }
+
+
+.form {
+  margin-top: 40px;
+  background-color: hsl(0, 0%, 95%);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+}
+
+
+button {
+  background-color: hsl(211, 100%, 50%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: hsl(211, 100%, 35%);
+}
+
+button:active{
+  background-color: hsl(211, 100%, 65%)
+}
+
